@@ -6,66 +6,66 @@ module JsonExpressions
 
   module CoreExtensions
     def ordered?
-      self.is_a? Ordered
+      is_a? Ordered
     end
 
     def unordered?
-      self.is_a? Unordered
+      is_a? Unordered
     end
 
     def ordered
-      self.clone.ordered!
+      clone.ordered!
     end
 
     def unordered
-      self.clone.unordered!
+      clone.unordered!
     end
 
     def ordered!
-      if self.unordered?
+      if unordered?
         raise "cannot mark an unordered #{self.class} as ordered!"
       else
-        self.extend Ordered
+        extend Ordered
       end
     end
 
     def unordered!
-      if self.ordered?
+      if ordered?
         raise "cannot mark an ordered #{self.class} as unordered!"
       else
-        self.extend Unordered
+        extend Unordered
       end
     end
 
     def strict?
-      self.is_a? Strict
+      is_a? Strict
     end
 
     def forgiving?
-      self.is_a? Forgiving
+      is_a? Forgiving
     end
 
     def strict
-      self.clone.strict!
+      clone.strict!
     end
 
     def forgiving
-      self.clone.forgiving!
+      clone.forgiving!
     end
 
     def strict!
-      if self.forgiving?
+      if forgiving?
         raise "cannot mark a forgiving #{self.class} as strict!"
       else
-        self.extend Strict
+        extend Strict
       end
     end
 
     def forgiving!
-      if self.strict?
+      if strict?
         raise "cannot mark a strict #{self.class} as forgiving!"
       else
-        self.extend Forgiving
+        extend Forgiving
       end
     end
   end
@@ -73,16 +73,16 @@ end
 
 class Hash
   include JsonExpressions::CoreExtensions
-  alias_method :reject_extra_keys, :strict
-  alias_method :reject_extra_keys!, :strict!
-  alias_method :ignore_extra_keys, :forgiving
-  alias_method :ignore_extra_keys!, :forgiving!
+  alias reject_extra_keys strict
+  alias reject_extra_keys! strict!
+  alias ignore_extra_keys forgiving
+  alias ignore_extra_keys! forgiving!
 end
 
 class Array
   include JsonExpressions::CoreExtensions
-  alias_method :reject_extra_values, :strict
-  alias_method :reject_extra_values!, :strict!
-  alias_method :ignore_extra_values, :forgiving
-  alias_method :ignore_extra_values!, :forgiving!
+  alias reject_extra_values strict
+  alias reject_extra_values! strict!
+  alias ignore_extra_values forgiving
+  alias ignore_extra_values! forgiving!
 end

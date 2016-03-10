@@ -4,19 +4,19 @@ require 'json_expressions/core_extensions'
 module JsonExpressions
   class TestCoreExtensions < ::MiniTest::Unit::TestCase
     METHODS_MODULE_MAPPING = {
-      :ordered   => Ordered,
-      :unordered => Unordered,
-      :strict    => Strict,
-      :forgiving => Forgiving
+      ordered: Ordered,
+      unordered: Unordered,
+      strict: Strict,
+      forgiving: Forgiving
     }.freeze
 
     def setup
-      @hash = {'a'=>1, 'b'=>2, 'c'=>3}
+      @hash = { 'a' => 1, 'b' => 2, 'c' => 3 }
       @array = [1, 2, 3]
     end
 
     METHODS_MODULE_MAPPING.each do |meth, mod|
-      ['array', 'hash'].each do |klass|
+      %w(array hash).each do |klass|
         eval <<-EOM, nil, __FILE__, __LINE__ + 1
           def test_#{klass}_#{meth}
             refute @#{klass}.is_a? #{mod}

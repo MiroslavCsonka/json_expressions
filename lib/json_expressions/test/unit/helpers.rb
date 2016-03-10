@@ -5,7 +5,7 @@ module JsonExpressions
   module Test
     module Unit
       module Helpers
-        def assert_json_match(exp, act, msg = nil)
+        def assert_json_match(exp, act, _msg = nil)
           unless JsonExpressions::Matcher === exp
             exp = JsonExpressions::Matcher.new(exp)
           end
@@ -23,7 +23,7 @@ module JsonExpressions
           end
 
           # Return the matcher
-          return exp
+          exp
         end
       end
     end

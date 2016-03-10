@@ -2,7 +2,7 @@ require 'json'
 
 module MiniTest
   module Assertions
-    def assert_json_match(exp, act, msg = nil)
+    def assert_json_match(exp, act, _msg = nil)
       unless JsonExpressions::Matcher === exp
         exp = JsonExpressions::Matcher.new(exp)
       end
@@ -11,13 +11,13 @@ module MiniTest
         assert act = JSON.parse(act), "Expected #{mu_pp(act)} to be valid JSON"
       end
 
-      assert exp =~ act, ->{ "Expected #{mu_pp(exp)} to match #{mu_pp(act)}\n" + exp.last_error}
+      assert exp =~ act, -> { "Expected #{mu_pp(exp)} to match #{mu_pp(act)}\n" + exp.last_error }
 
       # Return the matcher
-      return exp
+      exp
     end
 
-    def refute_json_match(exp, act, msg = nil)
+    def refute_json_match(exp, act, _msg = nil)
       unless JsonExpressions::Matcher === exp
         exp = JsonExpressions::Matcher.new(exp)
       end
@@ -29,7 +29,7 @@ module MiniTest
       refute exp =~ act, "Expected #{mu_pp(exp)} to not match #{mu_pp(act)}"
 
       # Return the matcher
-      return exp
+      exp
     end
   end
 end

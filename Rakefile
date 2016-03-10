@@ -2,7 +2,7 @@ require 'rake'
 require 'rake/testtask'
 require 'rspec/core/rake_task'
 
-task :default => [:test, :spec]
+task default: [:test, :spec]
 
 desc 'Run all test'
 Rake::TestTask.new do |t|

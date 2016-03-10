@@ -17,18 +17,18 @@ module JsonExpressions
       assert WILDCARD_MATCHER === 'Hello world!'
       assert WILDCARD_MATCHER === true
       assert WILDCARD_MATCHER === false
-      assert WILDCARD_MATCHER === nil
-      assert WILDCARD_MATCHER === [1,2,3,4,5]
-      assert WILDCARD_MATCHER === {k1: 'v1', k2: 'v2'}
+      assert WILDCARD_MATCHER.nil?
+      assert WILDCARD_MATCHER === [1, 2, 3, 4, 5]
+      assert WILDCARD_MATCHER === { k1: 'v1', k2: 'v2' }
 
       assert WILDCARD_MATCHER == 1
       assert WILDCARD_MATCHER == 1.1
       assert WILDCARD_MATCHER == 'Hello world!'
       assert WILDCARD_MATCHER == true
       assert WILDCARD_MATCHER == false
-      assert WILDCARD_MATCHER == nil
-      assert WILDCARD_MATCHER == [1,2,3,4,5]
-      assert WILDCARD_MATCHER == {k1: 'v1', k2: 'v2'}
+      assert WILDCARD_MATCHER.nil?
+      assert WILDCARD_MATCHER == [1, 2, 3, 4, 5]
+      assert WILDCARD_MATCHER == { k1: 'v1', k2: 'v2' }
     end
 
     def test_wildcard_matcher_pattern_matching
@@ -38,8 +38,8 @@ module JsonExpressions
       assert WILDCARD_MATCHER =~ true
       assert WILDCARD_MATCHER =~ false
       assert WILDCARD_MATCHER =~ nil
-      assert WILDCARD_MATCHER =~ [1,2,3,4,5]
-      assert WILDCARD_MATCHER =~ {k1: 'v1', k2: 'v2'}
+      assert WILDCARD_MATCHER =~ [1, 2, 3, 4, 5]
+      assert WILDCARD_MATCHER =~ { k1: 'v1', k2: 'v2' }
 
       assert_match WILDCARD_MATCHER, 1
       assert_match WILDCARD_MATCHER, 1.1
@@ -47,8 +47,8 @@ module JsonExpressions
       assert_match WILDCARD_MATCHER, true
       assert_match WILDCARD_MATCHER, false
       assert_match WILDCARD_MATCHER, nil
-      assert_match WILDCARD_MATCHER, [1,2,3,4,5]
-      assert_match WILDCARD_MATCHER, {k1: 'v1', k2: 'v2'}
+      assert_match WILDCARD_MATCHER, [1, 2, 3, 4, 5]
+      assert_match WILDCARD_MATCHER, k1: 'v1', k2: 'v2'
     end
 
     def test_wildcard_matcher_inspection

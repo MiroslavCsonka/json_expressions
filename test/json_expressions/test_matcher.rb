@@ -9,18 +9,18 @@ module JsonExpressions
         float:   1.1,
         string:  'Hello world!',
         boolean: false,
-        array:   [1,2,3],
-        object:  {'key1' => 'value1','key2' => 'value2'},
-        null:    nil,
+        array:   [1, 2, 3],
+        object:  { 'key1' => 'value1', 'key2' => 'value2' },
+        null:    nil
       }
 
-      @simple_array  = [
+      @simple_array = [
         1,
         1.1,
         'Hello world!',
         false,
-        [1,2,3],
-        {key1: 'value1', key2: 'value2'},
+        [1, 2, 3],
+        { key1: 'value1', key2: 'value2' },
         nil
       ]
 
@@ -30,21 +30,21 @@ module JsonExpressions
         l1_boolean:   false,
         l1_module:    Numeric,
         l1_wildcard:  WILDCARD_MATCHER,
-        l1_array:     ['l1: Hello world',1,true,nil,WILDCARD_MATCHER],
+        l1_array:     ['l1: Hello world', 1, true, nil, WILDCARD_MATCHER],
         l1_object:    {
           l2_string:    'Hi there!',
           l2_regexp:    /\A[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}\z/i,
           l2_boolean:   true,
           l2_module:    Enumerable,
           l2_wildcard:  WILDCARD_MATCHER,
-          l2_array:     ['l2: Hello world',2,true,nil,WILDCARD_MATCHER],
+          l2_array:     ['l2: Hello world', 2, true, nil, WILDCARD_MATCHER],
           l2_object:    {
             l3_string:    'Good day...',
             l3_regexp:    /\A.*\z/,
             l3_boolean:   false,
             l3_module:    String,
             l3_wildcard:  WILDCARD_MATCHER,
-            l3_array:     ['l3: Hello world',3,true,nil,WILDCARD_MATCHER],
+            l3_array:     ['l3: Hello world', 3, true, nil, WILDCARD_MATCHER]
           }
         }
       }
@@ -120,14 +120,14 @@ module JsonExpressions
     end
 
     def test_match_objects_ordered
-      reversed = @simple_object.reverse_each.inject({}){ |hash,(k,v)| hash[k] = v; hash }
+      reversed = @simple_object.reverse_each.inject({}) { |hash, (k, v)| hash[k] = v; hash }
       assert_match Matcher.new(@simple_object.ordered!), @simple_object
       refute_match Matcher.new(@simple_object.ordered!), reversed
       refute_match Matcher.new(@simple_object.ordered!), {}
     end
 
     def test_match_objects_unordered
-      reversed = @simple_object.reverse_each.inject({}){ |hash,(k,v)| hash[k] = v; hash }
+      reversed = @simple_object.reverse_each.inject({}) { |hash, (k, v)| hash[k] = v; hash }
       assert_match Matcher.new(@simple_object.unordered!), @simple_object
       assert_match Matcher.new(@simple_object.unordered!), reversed
       refute_match Matcher.new(@simple_object.unordered!), {}
@@ -135,14 +135,14 @@ module JsonExpressions
 
     def test_match_objects_strict
       assert_match Matcher.new(@simple_object.strict!), @simple_object
-      refute_match Matcher.new(@simple_object.strict!), @simple_object.merge({extra: 'stuff'})
-      refute_match Matcher.new(@simple_object.strict!), @simple_object.clone.delete_if {|key| key == :integer}
+      refute_match Matcher.new(@simple_object.strict!), @simple_object.merge(extra: 'stuff')
+      refute_match Matcher.new(@simple_object.strict!), @simple_object.clone.delete_if { |key| key == :integer }
     end
 
     def test_match_objects_forgiving
       assert_match Matcher.new(@simple_object.forgiving!), @simple_object
-      assert_match Matcher.new(@simple_object.forgiving!), @simple_object.merge({extra: 'stuff'})
-      refute_match Matcher.new(@simple_object.forgiving!), @simple_object.clone.delete_if {|key| key == :integer}
+      assert_match Matcher.new(@simple_object.forgiving!), @simple_object.merge(extra: 'stuff')
+      refute_match Matcher.new(@simple_object.forgiving!), @simple_object.clone.delete_if { |key| key == :integer }
     end
 
     def test_match_nil
@@ -158,10 +158,10 @@ module JsonExpressions
       assert_match Matcher.new(String), 'Hello world!'
       assert_match Matcher.new(Numeric), 1
       assert_match Matcher.new(Numeric), 1.1
-      assert_match Matcher.new(Enumerable), [1,2,3]
+      assert_match Matcher.new(Enumerable), [1, 2, 3]
       assert_match Matcher.new(Enumerable), (1..10)
       refute_match Matcher.new(String), nil
-      refute_match Matcher.new(Numeric), {a:1}
+      refute_match Matcher.new(Numeric), a: 1
       refute_match Matcher.new(Enumerable), Time.now
     end
 
@@ -171,34 +171,34 @@ module JsonExpressions
       assert_match Matcher.new(WILDCARD_MATCHER), 'Hello world!'
       assert_match Matcher.new(WILDCARD_MATCHER), true
       assert_match Matcher.new(WILDCARD_MATCHER), false
-      assert_match Matcher.new(WILDCARD_MATCHER), [1,2,3]
-      assert_match Matcher.new(WILDCARD_MATCHER), {key1: 'value1',key2: 'value2'}
+      assert_match Matcher.new(WILDCARD_MATCHER), [1, 2, 3]
+      assert_match Matcher.new(WILDCARD_MATCHER), key1: 'value1', key2: 'value2'
       assert_match Matcher.new(WILDCARD_MATCHER), nil
     end
 
     def test_match_capture
-      assert_match Matcher.new({key1: :capture1, key2: :capture2}), {key1: 'value1', key2: 'value2'}
+      assert_match Matcher.new(key1: :capture1, key2: :capture2), key1: 'value1', key2: 'value2'
     end
 
     def test_match_capture_common
-      assert_match Matcher.new({key1: :common, key2: :common}), {key1: 'value1', key2: 'value1'}
-      refute_match Matcher.new({key1: :common, key2: :common}), {key1: 'value1', key2: 'value2'}
+      assert_match Matcher.new(key1: :common, key2: :common), key1: 'value1', key2: 'value1'
+      refute_match Matcher.new(key1: :common, key2: :common), key1: 'value1', key2: 'value2'
     end
 
     def test_capture_result
-      m = Matcher.new({key1: :capture1, key2: :capture2})
-      m =~ {key1: 'value1', key2: 'value2'}
+      m = Matcher.new(key1: :capture1, key2: :capture2)
+      m =~ { key1: 'value1', key2: 'value2' }
       assert_equal 'value1', m.captures[:capture1]
       assert_equal 'value2', m.captures[:capture2]
     end
 
     def test_reuse_matcher
-      m = Matcher.new({key1: :capture1})
+      m = Matcher.new(key1: :capture1)
 
       assert_nil m.last_error
       assert_empty m.captures
 
-      assert_match m, {key1: 'value1'}
+      assert_match m, key1: 'value1'
       assert_nil m.last_error
       refute_empty m.captures
 
@@ -206,7 +206,7 @@ module JsonExpressions
       refute_nil m.last_error
       assert_empty m.captures
 
-      assert_match m, {key1: 'value1'}
+      assert_match m, key1: 'value1'
       assert_nil m.last_error
       refute_empty m.captures
     end
@@ -218,21 +218,21 @@ module JsonExpressions
         l1_boolean:   false,
         l1_module:    1.1,
         l1_wildcard:  true,
-        l1_array:     ['l1: Hello world',1,true,nil,false],
+        l1_array:     ['l1: Hello world', 1, true, nil, false],
         l1_object:    {
           l2_string:    'Hi there!',
           l2_regexp:    '1234-5678-1234-5678',
           l2_boolean:   true,
-          l2_module:    [1,2,3,4],
+          l2_module:    [1, 2, 3, 4],
           l2_wildcard:  'Whatever',
-          l2_array:     ['l2: Hello world',2,true,nil,'Whatever'],
+          l2_array:     ['l2: Hello world', 2, true, nil, 'Whatever'],
           l2_object:    {
             l3_string:    'Good day...',
             l3_regexp:    '',
             l3_boolean:   false,
             l3_module:    'This is like... inception!',
             l3_wildcard:  nil,
-            l3_array:     ['l3: Hello world',3,true,nil,[]]
+            l3_array:     ['l3: Hello world', 3, true, nil, []]
           }
         }
       }
@@ -243,21 +243,21 @@ module JsonExpressions
         l1_boolean:   false,
         l1_module:    1.1,
         l1_wildcard:  true,
-        l1_array:     ['l1: Hello world',1,true,nil,false],
+        l1_array:     ['l1: Hello world', 1, true, nil, false],
         l1_object:    {
           l2_string:    'Hi there!',
           l2_regexp:    '1234-5678-1234-5678',
           l2_boolean:   true,
-          l2_module:    [1,2,3,4],
+          l2_module:    [1, 2, 3, 4],
           l2_wildcard:  'Whatever',
-          l2_array:     ['l2: Hello world',2,true,nil,'Whatever'],
+          l2_array:     ['l2: Hello world', 2, true, nil, 'Whatever'],
           l2_object:    {
             l3_string:    'Good day...',
             l3_regexp:    '',
             l3_boolean:   false,
             l3_module:    'This is like... inception!',
             l3_wildcard:  nil,
-            l3_array:     ['***THIS SHOULD BREAK THINGS***',3,true,nil,[]]
+            l3_array:     ['***THIS SHOULD BREAK THINGS***', 3, true, nil, []]
           }
         }
       }
@@ -273,86 +273,86 @@ module JsonExpressions
     end
 
     def test_error_not_match_capture
-      m = Matcher.new({key1: :capture_me, key2: :capture_me})
-      m =~ {key1: 'value1', key2: nil}
+      m = Matcher.new(key1: :capture_me, key2: :capture_me)
+      m =~ { key1: 'value1', key2: nil }
       assert_equal 'At (JSON ROOT).key2: expected capture with key :capture_me and value value1 to match nil', m.last_error
     end
 
     def test_error_not_an_array
-      m = Matcher.new([1,2,3,4,5])
+      m = Matcher.new([1, 2, 3, 4, 5])
       m =~ nil
       assert_equal '(JSON ROOT) is not an array', m.last_error
     end
 
     def test_error_undersized_array
-      m = Matcher.new([1,2,3,4,5])
-      m =~ [1,2,3,4]
+      m = Matcher.new([1, 2, 3, 4, 5])
+      m =~ [1, 2, 3, 4]
       assert_equal '(JSON ROOT) contains too few elements (5 expected but was 4)', m.last_error
     end
 
     def test_error_oversized_array
-      m = Matcher.new([1,2,3,4,5].strict!)
-      m =~ [1,2,3,4,5,6]
+      m = Matcher.new([1, 2, 3, 4, 5].strict!)
+      m =~ [1, 2, 3, 4, 5, 6]
       assert_equal '(JSON ROOT) contains too many elements (5 expected but was 6)', m.last_error
     end
 
     def test_error_array_ordered_no_match
-      m = Matcher.new([1,2,3,4,5].ordered!)
-      m =~ [1,2,3,4,6]
+      m = Matcher.new([1, 2, 3, 4, 5].ordered!)
+      m =~ [1, 2, 3, 4, 6]
       assert_equal 'At (JSON ROOT)[4]: expected 5 to match 6', m.last_error
     end
 
     def test_error_array_unordered_no_match
-      m = Matcher.new([1,2,3,4,5].unordered!)
-      m =~ [1,2,3,4,6]
+      m = Matcher.new([1, 2, 3, 4, 5].unordered!)
+      m =~ [1, 2, 3, 4, 6]
       assert_equal '(JSON ROOT) does not contain a matching element for 5 - At (JSON ROOT).*: expected 5 to match 6', m.last_error
     end
 
     def test_array_with_hash_inside
-      m = Matcher.new([{foo: 'bar'}])
+      m = Matcher.new([{ foo: 'bar' }])
       m =~ [{}]
 
-      assert_equal "(JSON ROOT) does not contain a matching element for #{{foo: 'bar'}} - (JSON ROOT).* does not contain the key foo", m.last_error
+      assert_equal "(JSON ROOT) does not contain a matching element for {foo: 'bar'} - (JSON ROOT).* does not contain the key foo", m.last_error
     end
 
     def test_error_not_a_hash
-      m = Matcher.new({key1: 'value1', key2: 'value2'})
+      m = Matcher.new(key1: 'value1', key2: 'value2')
       m =~ nil
       assert_equal '(JSON ROOT) is not a hash', m.last_error
     end
 
     def test_error_hash_missing_key
-      m = Matcher.new({key1: 'value1', key2: 'value2'})
-      m =~ {key1:  'value1'}
+      m = Matcher.new(key1: 'value1', key2: 'value2')
+      m =~ { key1:  'value1' }
       assert_equal '(JSON ROOT) does not contain the key key2', m.last_error
     end
 
     def test_error_hash_extra_key
-      m = Matcher.new({key1: 'value1', key2: 'value2'}.strict!)
-      m =~ {key1: 'value1', key2: 'value2', key3: 'value3'}
+      m = Matcher.new({ key1: 'value1', key2: 'value2' }.strict!)
+      m =~ { key1: 'value1', key2: 'value2', key3: 'value3' }
       assert_equal '(JSON ROOT) contains an extra key key3', m.last_error
     end
 
     def test_error_hash_ordering
-      m = Matcher.new({key1: 'value1', key2: 'value2'}.ordered!)
-      m =~ {key2: 'value2', key1: 'value1'}
+      m = Matcher.new({ key1: 'value1', key2: 'value2' }.ordered!)
+      m =~ { key2: 'value2', key1: 'value1' }
       assert_equal 'Incorrect key-ordering at (JSON ROOT) (["key1", "key2"] expected but was ["key2", "key1"])', m.last_error
     end
 
     def test_error_hash_no_match
-      m = Matcher.new({key1: 'value1', key2: 'value2'})
-      m =~ {key1: 'value1', key2: nil}
+      m = Matcher.new(key1: 'value1', key2: 'value2')
+      m =~ { key1: 'value1', key2: nil }
       assert_equal 'At (JSON ROOT).key2: expected "value2" to match nil', m.last_error
     end
 
     def test_error_path
-      m = Matcher.new({l1:{l2:[nil,nil,{l3:[nil,nil,nil,'THIS'].ordered!}].ordered!}})
-      m =~ {l1:{l2:[nil,nil,{l3:[nil,nil,nil,'THAT']}]}}
+      m = Matcher.new(l1: { l2: [nil, nil, { l3: [nil, nil, nil, 'THIS'].ordered! }].ordered! })
+      m =~ { l1: { l2: [nil, nil, { l3: [nil, nil, nil, 'THAT'] }] } }
       assert_equal 'At (JSON ROOT).l1.l2[2].l3[3]: expected "THIS" to match "THAT"', m.last_error
     end
 
     def test_inspection
-      test_cases = [ {}, @simple_object, [], @simple_array, @complex_pattern ]
+      test_cases = [{}, @simple_object, [], @simple_array, @complex_pattern]
 
       test_cases.each do |e|
         assert_equal e.to_s, Matcher.new(e).to_s
@@ -371,7 +371,7 @@ module JsonExpressions
           refute matcher.triple_equable? 'Hello world!'
           refute matcher.triple_equable? 1
           refute matcher.triple_equable? 1.1
-          refute matcher.triple_equable? [1,2,3]
+          refute matcher.triple_equable? [1, 2, 3]
           refute matcher.triple_equable? (1..10)
           assert matcher.triple_equable? true
           assert matcher.triple_equable? nil
@@ -425,7 +425,7 @@ module JsonExpressions
       old_assume_unordered_hashes = Matcher.assume_unordered_hashes
 
       begin
-        reversed = @simple_object.reverse_each.inject({}){ |hash,(k,v)| hash[k] = v; hash }
+        reversed = @simple_object.reverse_each.inject({}) { |hash, (k, v)| hash[k] = v; hash }
 
         Matcher.assume_unordered_hashes = true
         assert_match Matcher.new(@simple_object.clone), reversed
@@ -441,51 +441,51 @@ module JsonExpressions
 
       begin
         Matcher.assume_strict_hashes = true
-        refute_match Matcher.new(@simple_object.clone), @simple_object.merge({extra: 'stuff'})
+        refute_match Matcher.new(@simple_object.clone), @simple_object.merge(extra: 'stuff')
         Matcher.assume_strict_hashes = false
-        assert_match Matcher.new(@simple_object.clone), @simple_object.merge({extra: 'stuff'})
+        assert_match Matcher.new(@simple_object.clone), @simple_object.merge(extra: 'stuff')
       ensure
         Matcher.assume_strict_hashes = old_assume_strict_hashes
       end
     end
 
     def test_hash_with_indifferent_access
-      assert_match Matcher.new({a:1,b:false,c:nil}), {a:1,b:false,c:nil}
-      assert_match Matcher.new({'a'=>1,'b'=>false,'c'=>nil}), {a:1,b:false,c:nil}
-      assert_match Matcher.new({a:1,b:false,c:nil}), {'a'=>1,'b'=>false,'c'=>nil}
-      assert_match Matcher.new({'a'=>1,'b'=>false,'c'=>nil}), {'a'=>1,'b'=>false,'c'=>nil}
+      assert_match Matcher.new(a: 1, b: false, c: nil), a: 1, b: false, c: nil
+      assert_match Matcher.new('a' => 1, 'b' => false, 'c' => nil), a: 1, b: false, c: nil
+      assert_match Matcher.new(a: 1, b: false, c: nil), 'a' => 1, 'b' => false, 'c' => nil
+      assert_match Matcher.new('a' => 1, 'b' => false, 'c' => nil), 'a' => 1, 'b' => false, 'c' => nil
     end
 
     private
 
-    def jsonize()
+    def jsonize
     end
 
     def publicize_method(source, meth, &block)
       publicize_methods(source, [meth], &block)
     end
 
-    def publicize_methods(source, pairs, &block)
+    def publicize_methods(source, pairs)
       changed = []
 
       begin
         pairs.each { |meth| change_visibility(source, meth, :public) }
         yield
       ensure
-        changed.each { |meth,viz| change_visibility(source, meth, viz) }
+        changed.each { |meth, viz| change_visibility(source, meth, viz) }
       end
     end
 
     def change_visibility(source, meth, viz)
       old_viz = if source.public_method_defined? meth
-        :public
-      elsif source.private_method_defined? meth
-        :private
-      elsif source.protected_method_defined? meth
-        :protected
-      else
-        # call the method to trigger a NoMethodError
-        source.__send__ meth
+                  :public
+                elsif source.private_method_defined? meth
+                  :private
+                elsif source.protected_method_defined? meth
+                  :protected
+                else
+                  # call the method to trigger a NoMethodError
+                  source.__send__ meth
       end
       source.__send__ viz, meth
       [meth, old_viz]

@@ -50,7 +50,7 @@ module JsonExpressions
       match_json('(JSON ROOT)', @json, other)
     end
 
-    alias_method :match, :=~
+    alias match =~
 
     def to_s
       @json.to_s
@@ -102,7 +102,7 @@ module JsonExpressions
 
     def match_array(path, matcher, other)
       unless other.is_a? Array
-        set_last_error path, "%path% is not an array"
+        set_last_error path, '%path% is not an array'
         return false
       end
 
@@ -119,7 +119,7 @@ module JsonExpressions
       end
 
       if matcher.ordered?
-        matcher.zip(other).each_with_index { |(v1,v2),i| return false unless match_json(make_path(path,i), v1, v2) }
+        matcher.zip(other).each_with_index { |(v1, v2), i| return false unless match_json(make_path(path, i), v1, v2) }
       else
         other = other.clone
 
@@ -137,7 +137,7 @@ module JsonExpressions
 
     def match_hash(path, matcher, other)
       unless other.is_a? Hash
-        set_last_error path, "%path% is not a hash"
+        set_last_error path, '%path% is not a hash'
         return false
       end
 
@@ -147,12 +147,12 @@ module JsonExpressions
       extra_keys   = other.keys.map(&:to_s) - matcher.keys.map(&:to_s)
 
       unless missing_keys.empty?
-        set_last_error path, "%path% does not contain the key #{missing_keys.first.to_s}"
+        set_last_error path, "%path% does not contain the key #{missing_keys.first}"
         return false
       end
 
-      if matcher.strict? && ! extra_keys.empty?
-        set_last_error path, "%path% contains an extra key #{extra_keys.first.to_s}"
+      if matcher.strict? && !extra_keys.empty?
+        set_last_error path, "%path% contains an extra key #{extra_keys.first}"
         return false
       end
 
@@ -162,36 +162,36 @@ module JsonExpressions
       end
 
       matcher.keys.all? do |k|
-        match_json make_path(path,k), matcher[k], other.key?(k.to_s) ? other[k.to_s] : other[k.to_sym]
+        match_json make_path(path, k), matcher[k], other.key?(k.to_s) ? other[k.to_s] : other[k.to_sym]
       end
     end
 
     def set_last_error(path, message)
-      @last_error = message.gsub('%path%',path) if path
+      @last_error = message.gsub('%path%', path) if path
     end
 
     def make_path(path, segment)
       if path
-        segment.is_a?(Fixnum) ? path + "[#{segment}]" : path + ".#{segment.to_s}"
+        segment.is_a?(Fixnum) ? path + "[#{segment}]" : path + ".#{segment}"
       end
     end
 
     def apply_array_defaults(array)
-      if ! array.ordered? && ! array.unordered?
+      if !array.ordered? && !array.unordered?
         self.class.assume_unordered_arrays ? array.unordered! : array.ordered!
       end
 
-      if ! array.strict? && ! array.forgiving?
+      if !array.strict? && !array.forgiving?
         self.class.assume_strict_arrays ? array.strict! : array.forgiving!
       end
     end
 
     def apply_hash_defaults(hash)
-      if ! hash.ordered? && ! hash.unordered?
+      if !hash.ordered? && !hash.unordered?
         self.class.assume_unordered_hashes ? hash.unordered! : hash.ordered!
       end
 
-      if ! hash.strict? && ! hash.forgiving?
+      if !hash.strict? && !hash.forgiving?
         self.class.assume_strict_hashes ? hash.strict! : hash.forgiving!
       end
     end
